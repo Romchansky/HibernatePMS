@@ -3,14 +3,14 @@ package ua.goit.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
-
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "projects")
+@ToString(exclude = "projects")
 @Entity
 @Table(name = "customer")
 public class Customer implements BaseEntity<Long>{
@@ -31,7 +31,11 @@ public class Customer implements BaseEntity<Long>{
     @Column(name = "industry")
     private String industry;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "customers_projects",
+            joinColumns = {@JoinColumn(name = "id_customer")},
+            inverseJoinColumns = {@JoinColumn(name = "id_project")})
     private Set<Project> projects;
 
 }

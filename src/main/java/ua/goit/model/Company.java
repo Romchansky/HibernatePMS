@@ -3,7 +3,6 @@ package ua.goit.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
@@ -29,10 +28,11 @@ public class Company implements BaseEntity<Long> {
     @Column(name = "city")
     private String city;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "companies_projects",
+            joinColumns = {@JoinColumn(name = "id_company")},
+            inverseJoinColumns = {@JoinColumn(name = "id_project")})
     private Set<Project> projects;
-
-
-
 
 }

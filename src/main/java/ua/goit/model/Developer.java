@@ -10,8 +10,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "projects")
-@ToString(exclude = "projects")
+@EqualsAndHashCode(exclude = {"projects","skills"})
+@ToString(exclude = {"projects","skills"})
 @Entity
 @Table(name = "developer")
 public class Developer implements BaseEntity<Long> {
@@ -35,11 +35,7 @@ public class Developer implements BaseEntity<Long> {
     @Column(name = "salary")
     private Long salary;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "developers_projects",
-            joinColumns = {@JoinColumn(name = "id_developer")},
-            inverseJoinColumns = {@JoinColumn(name = "id_project")})
+    @ManyToMany(mappedBy = "developers")
     private Set<Project> projects;
 
     @ManyToMany(cascade = CascadeType.ALL)

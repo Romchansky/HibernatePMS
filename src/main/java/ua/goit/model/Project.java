@@ -3,16 +3,14 @@ package ua.goit.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "[developer, company]")
-@ToString(exclude = "company")
+@EqualsAndHashCode(exclude = {"developers", "customers", "companies"})
+@ToString(exclude = {"developers", "customers", "companies"})
 @Entity
 @Table(name = "project")
 public class Project implements BaseEntity<Long> {
@@ -36,18 +34,15 @@ public class Project implements BaseEntity<Long> {
     @Column(name = "create_date")
     private String createData;
 
-    @ManyToOne
-    @JoinColumn(name = "id_company")
-    private Company company;
+    @ManyToMany(mappedBy = "projects")
+    private Set<Company> companies;
 
-    @ManyToOne
-    @JoinColumn(name = "id_customer")
-    private Customer customer;
+    @ManyToMany(mappedBy = "projects")
+    private Set<Customer> customers;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "developers_projects",
-            joinColumns = {@JoinColumn(name = "id_project")},
+            name = "developers_projects", joinColumns = {@JoinColumn(name = "id_project")},
             inverseJoinColumns = {@JoinColumn(name = "id_developer")})
     private Set<Developer> developers;
 

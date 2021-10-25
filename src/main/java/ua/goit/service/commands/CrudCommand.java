@@ -1,6 +1,5 @@
 package ua.goit.service.commands;
 
-import lombok.Builder;
 import ua.goit.model.BaseEntity;
 import ua.goit.repository.CrudRepository;
 import ua.goit.repository.RepositoryFactory;
@@ -12,7 +11,6 @@ import java.util.Optional;
 
 
 public abstract class CrudCommand<E extends BaseEntity<ID>, ID> implements Command {
-
     private final CrudRepository<E, ID> crudRepository;
     private final Class<E> modelClass;
     protected final View view;
@@ -31,14 +29,12 @@ public abstract class CrudCommand<E extends BaseEntity<ID>, ID> implements Comma
     }
 
     protected void findById() {
-        view.write("Введите ID");
-        Optional<E> result = crudRepository.findById((ID) view.read());
+        Optional<E> result = crudRepository.findById(parseId("Введите ID"));
         sendResult(result.isPresent(), result);
     }
 
     protected void deleteById() {
-        view.write("Введите ID по которому хотите удалить");
-        crudRepository.deleteById((ID) view.read());
+        crudRepository.deleteById(parseId("Введите ID по которому хотите удалить"));
         view.write("Объект удален");
     }
 
@@ -47,6 +43,10 @@ public abstract class CrudCommand<E extends BaseEntity<ID>, ID> implements Comma
         crudRepository.save(entity);
     }
 
+    private ID parseId(String message) {
+        view.write(message);
+        return (ID) Long.valueOf(view.read());
+    }
 
     private void sendResult(Boolean isDone, Object... result) {
         if (isDone) view.write(result);
@@ -56,5 +56,4 @@ public abstract class CrudCommand<E extends BaseEntity<ID>, ID> implements Comma
     private void sendResult(Boolean isDone, List result) {
         sendResult(isDone, result.toArray());
     }
-
 }

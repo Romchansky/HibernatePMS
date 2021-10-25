@@ -1,18 +1,16 @@
 package ua.goit.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"developers","companies"})
+@ToString(exclude = {"developers","companies"})
 @Entity(name = "skills")
 public class Skills implements BaseEntity<Long> {
 
@@ -29,11 +27,10 @@ public class Skills implements BaseEntity<Long> {
     @Column(name = "level")
     private String level;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "developers_skills",
-            joinColumns = {@JoinColumn(name = "id_skill")},
-            inverseJoinColumns = {@JoinColumn(name = "id_developer")})
+    @ManyToMany(mappedBy = "skills")
     private Set<Developer> developers;
+
+    @ManyToMany(mappedBy = "skills")
+    private Set<Developer> companies;
 
 }
